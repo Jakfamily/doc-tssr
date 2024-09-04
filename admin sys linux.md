@@ -55,56 +55,57 @@ Mot de passe initial : Ch@ngeMe
 Mot de passe à changer : Alice devra changer son mot de passe lors de sa première connexion pour des raisons de sécurité.
 ```
 ## Environnement de travail
+### Vim
 installation de vim 
 ```bash
 sudo apt install vim
 ```
 creation du .vimrc 
 ```bash
-vim .vimrc
+touch .vimrc
 ```
 parametres de base de vim
 
 * Affiche les numéros de ligne dans la marge gauche de l'éditeur.
 
-```set number```
+    ```set number```
 
 * Active la coloration syntaxique pour améliorer la lisibilité du code.
 
-```syntax enable```
+    ```syntax enable```
 
 * Met en surbrillance toutes les occurrences de la recherche actuelle.
 
-```set hlsearch```
+    ```set hlsearch```
 
 * Active la recherche incrémentale, c'est-à-dire que les résultats de la recherche sont mis à jour à mesure que vous tapez.
 
-```set incsearch```
+    ```set incsearch```
 
 * Active l'indentation intelligente, ce qui ajuste l'indentation en fonction de la syntaxe du code.
 
-```set smartindent```
+    ```set smartindent```
 
 * Active l'indentation automatique lors de la frappe de nouvelles lignes.
 
-```set autoindent```
+    ```set autoindent```
 
 * Définit la largeur d'un onglet à 4 espaces.
 
-```set tabstop=4```
+    ```set tabstop=4```
 
 * Définit le nombre d'espaces utilisés pour chaque niveau d'indentation lors du décalage automatique (shift).
 
-```set shiftwidth=4```
+    ```set shiftwidth=4```
 
 * Remplace les tabulations par des espaces, ce qui permet de conserver une mise en page cohérente.
 
-```set expandtab```
+    ```set expandtab```
 
 * Configure les options de complétion automatique :
-* `menu` : Affiche les options de complétion dans un menu déroulant.
-* `menuone` : Affiche le menu de complétion même s'il n'y a qu'une seule option.
-* `noselect` : Ne sélectionne pas automatiquement la première option du menu de complétion.
+  * `menu` : Affiche les options de complétion dans un menu déroulant.
+  * `menuone` : Affiche le menu de complétion même s'il n'y a qu'une seule option.
+  * `noselect` : Ne sélectionne pas automatiquement la première option du menu de complétion.
 
 ```set completeopt=menu,menuone,noselect```
 
@@ -296,6 +297,10 @@ sudo mkdir -p /services/comptabilite
 sudo mkdir -p /services/logistique
 sudo mkdir -p /services/direction
 ```
+ou en une seule commande
+```bash
+sudo mkdir -p /services/ {commercial,informatique,...}
+```
 Ajouter les permissions aux groupes concernés
 ```bash
 chown :Commercial commercial
@@ -450,13 +455,13 @@ fdisk /dev/sdc
 ```
 Dans fdisk :
 
-Taper `n` pour créer une nouvelle partition.
+* Taper `n` pour créer une nouvelle partition.
 
-Accepter les valeurs par défaut pour utiliser tout l'espace.
+* Accepter les valeurs par défaut pour utiliser tout l'espace.
 
-Taper `t` et entrez 8e pour définir le type comme "Linux LVM".
+* Taper `t` et entrez 8e pour définir le type comme "Linux LVM".
 
-Taper `w` pour écrire les changements sur le disque.
+* Taper `w` pour écrire les changements sur le disque.
 
 Répéter ces étapes pour le disque /dev/sdd.
 
