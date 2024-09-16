@@ -82,6 +82,64 @@ config nom d'hote
 system 
 changer nom 
 ```
+
+### Penser a auhtoriser les ping 
+
+#### Méthode 1 : Via l'interface graphique (Pare-feu Windows)
+
+1. **Ouvrir le Pare-feu Windows avec fonctions avancées :**
+   - Appuie sur `Win + R`, tape `wf.msc`, puis appuie sur `Entrée`.
+   - Cela ouvrira la console de gestion du pare-feu.
+
+2. **Créer une règle entrante pour les requêtes ICMP :**
+   - Dans le panneau de gauche, clique sur **Règles de trafic entrant**.
+   - Dans le panneau de droite, clique sur **Nouvelle règle**.
+
+3. **Configurer la nouvelle règle :**
+   - Sélectionne **Personnalisée** et clique sur **Suivant**.
+   - Dans la section **Type de programme**, choisis **Tous les programmes**.
+   - Pour le **Type de protocole**, sélectionne **ICMPv4** (ceci est pour les requêtes IPv4, tu peux aussi ajouter ICMPv6 si nécessaire).
+   - Laisse le champ **Adresse IP source et destination** par défaut, sauf si tu veux restreindre les pings à des IP spécifiques.
+
+4. **Action de la règle :**
+   - Sélectionne **Autoriser la connexion**.
+
+5. **Appliquer à des profils réseau :**
+   - Choisis les profils sur lesquels la règle s'applique (**Domaine**, **Privé**, **Public**), selon les besoins.
+
+6. **Nommer la règle :**
+   - Donne un nom à la règle, par exemple **"Autoriser Ping ICMPv4"**, puis clique sur **Terminer**.
+
+#### Méthode 2 : Via la ligne de commande (PowerShell)
+
+1. **Ouvrir une fenêtre PowerShell en tant qu'administrateur :**
+   - Appuie sur `Win + X`, puis sélectionne **Windows PowerShell (Admin)** ou **Invite de commandes (Admin)**.
+
+2. **Ajouter la règle pour autoriser les pings :**
+   - Utilise la commande suivante pour autoriser les pings ICMP :
+
+     ```powershell
+     New-NetFirewallRule -DisplayName "Autoriser Ping ICMPv4" -Protocol ICMPv4 -Direction Inbound -Action Allow -Profile Any
+     ```
+
+   - Cette commande crée une règle pour autoriser les pings ICMPv4 dans tous les profils réseau (**domaine**, **privé**, **public**).
+
+#### Méthode 3 : Via l'Invite de Commandes (cmd)
+
+1. **Ouvrir l'Invite de commandes en tant qu'administrateur :**
+   - Appuie sur `Win + X` et sélectionne **Invite de commandes (Admin)**.
+
+2. **Ajouter la règle pour autoriser les pings :**
+   - Utilise cette commande pour activer les pings ICMP :
+
+     ```cmd
+     netsh advfirewall firewall add rule name="Autoriser Ping" protocol=icmpv4:any,any dir=in action=allow
+     ```
+
+   - Cette commande ajoute une règle qui autorise les pings ICMPv4.
+
+ 
+ 
 ### ajout de role et de fonctionaliter sur windows server
 ![image](https://hackmd.io/_uploads/Hk8nnK-p0.png)
 
@@ -254,7 +312,38 @@ Active Directory sert à **centraliser** :
 - **Kerberos**
 
 **lexique**
-- **DNS** : Résolution des noms de machine et localisation des services réseau.
+- **DNS** : Résolution des noms de machine et localisation des services réseau. port `53` UDP, TCP au dela de 53ko
 - **LDAP** : Norme pour les systèmes d'annuaire avec une structure de base de données.
 - **Kerberos** : Protocole d'authentification reposant sur un mécanisme de clés secrètes et l'utilisation de tickets.
 
+![image](https://hackmd.io/_uploads/HJhjUhNp0.png)
+
+--- 
+En cours de rédaction 
+
+---
+### installation d'un AD 
+```powershell=
+gerer 
+ajout de role et fonctionaliter 
+installation basee sur un role ou une fonctionalite
+Service AD DS 
+ajoute les fonctionaliter
+continuer 
+redemarer si besion auomatiquement 
+et installer 
+```
+
+configuration post deploiment 
+```powershell=
+ajouter une nouvelle foret 
+nom de domaine racine exemple.local
+selectioner le niveau fonctionelle de la foret 
+cree un DSRM mot de passe fort sert en cas de restauratyion de l'AD
+suivant on passe le message dns dans un premier temps 
+nom de domaine netbios et le nom de domaine sans le .local 
+specifier les chemin par defaut on touche pas 
+voir recap 
+attente de validation pour savoir si cest ok 
+installer 
+``` 
