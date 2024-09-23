@@ -40,7 +40,7 @@ ctrl + alt + del pour deverouiller la machine ou bouton ![image](https://hackmd.
 
 pas oublier d'installer vmware tools 
 ```
-note : lors du clonage de vm le sid et dupliques il seras necessaire de refaire un sysprep sur la vm cloner 
+Note : Lors du clonage d'une VM, le SID est dupliqué. Il sera nécessaire d'exécuter un sysprep sur la VM clonée 
 
 ## Preparation du  sysprep
 
@@ -324,66 +324,215 @@ Active Directory sert à **centraliser** :
 ![image](https://hackmd.io/_uploads/HJhjUhNp0.png)
 
 
-### installation d'un AD 
-```powershell=
-gerer 
-ajout de role et fonctionaliter 
-installation basee sur un role ou une fonctionalite
-Service AD DS 
-ajoute les fonctionaliter
-continuer 
-redemarer si besion auomatiquement 
-et installer 
-```
+# Installation et Configuration d'un Active Directory (AD)
 
-### configuration post deploiment 
-```powershell=
-ajouter une nouvelle foret 
-nom de domaine racine exemple.local
-selectioner le niveau fonctionelle de la foret 
-cree un DSRM mot de passe fort sert en cas de restauratyion de l'AD
-suivant on passe le message dns dans un premier temps 
-nom de domaine netbios et le nom de domaine sans le .local 
-specifier les chemin par defaut on touche pas 
-voir recap 
-attente de validation pour savoir si cest ok 
-installer 
-``` 
-ne pas oublier d'ajouter le nom de domaine au autres machine et preferer l'ip du controller de domaine en dns 
+## Installation d'un Active Directory (AD)
 
-add l'ip du controleur de domaine
-puis ajouter le nom de domaine pour ce faire 
-syteme -> apropos  -> parametre avancer du systeme -> nom de lordinateur ->
-![image](https://hackmd.io/_uploads/HJVKmFS6R.png)
+1. **Lancer le Gestionnaire de Serveur**  
+   Aller dans **Gérer** > **Ajouter des rôles et fonctionnalités**.
+   
+2. **Sélectionner une installation basée sur un rôle ou une fonctionnalité**  
+   Choisir l'option d'**Installation basée sur un rôle ou une fonctionnalité**.
 
-afin de visualiser le bonne ajouts on peut le verifier garce a sa console 
+3. **Sélectionner le service AD DS**  
+   Cocher **Service AD DS** et accepter les fonctionnalités supplémentaires nécessaires.
 
-```powershell=
-win + r 
-tapez dsa.msc
-puis naviguer dans le nom de domaine 
-computer et user 
-```
-## La base de la gestion dun domaine 
-**La création de l'arborescence doit être bien comprise et réalisée avant de monter un Active Directory (AD)**
+4. **Poursuivre avec l'installation**  
+   - Cliquer sur **Continuer**.
+   - Activer l'option de redémarrage automatique si nécessaire.
+   - Cliquer sur **Installer**.
 
-La bonne pratique veut qu'on crée une unité d'organisation et qu'on coche l'option 'Protéger l'objet contre la suppression accidentelle'
+## Configuration post-déploiement
 
-```powershell=
-Ouvrez la console Ad (dsa.msc)
-Créez l'uniter dorganisation principale "Mon Entreprise" : 
-	Clic droit sur le domaine
-	Sélectionnez "Nouveau" > "Unité d'organisation"
-	Nommez-la "Mon Entreprise"
-Créez des sous-UOs pour représenter la structure de votre entreprise. 
-```
+1. **Ajouter une nouvelle forêt**  
+   Sélectionner **Ajouter une nouvelle forêt** et définir le **nom de domaine racine** (exemple : `exemple.local`).
+
+2. **Choisir le niveau fonctionnel de la forêt**  
+   Sélectionner le niveau fonctionnel selon vos besoins (ex: **Windows Server 2016** ou **Windows Server 2019**).
+
+3. **Configurer le mot de passe DSRM**  
+   Créer un mot de passe DSRM (Directory Services Restore Mode) sécurisé, utilisé en cas de restauration de l'AD.
+
+4. **Passer le message DNS**  
+   Le rôle DNS sera installé automatiquement. Passer à l'étape suivante.
+
+5. **Définir le nom NetBIOS**  
+   Le nom NetBIOS est généré automatiquement à partir du nom de domaine, sans le suffixe `.local`.
+
+6. **Laisser les chemins par défaut**  
+   Conserver les chemins par défaut pour la base de données, les fichiers journaux et le dossier SYSVOL.
+
+7. **Vérifier les paramètres et installer**  
+   Visualiser le récapitulatif des paramètres et cliquer sur **Installer**.
+
+## Configuration des autres machines pour joindre le domaine
+
+1. **Configurer le DNS**  
+   Sur les autres machines, ajouter l'IP du contrôleur de domaine comme serveur DNS principal.
+
+2. **Ajouter le nom de domaine**  
+   Aller dans **Système** > **À propos** > **Paramètres avancés du système** > **Nom de l'ordinateur** et ajouter le nom de domaine (ex: `exemple.local`).
+
+![Image ajout du domaine](https://hackmd.io/_uploads/HJVKmFS6R.png)
+
+## Vérification via la console Active Directory
+
+1. **Ouvrir la console Active Directory**  
+   - Appuyer sur **Win + R**.
+   - Taper `dsa.msc` pour ouvrir la console **Utilisateurs et ordinateurs Active Directory**.
+
+2. **Vérifier les objets**  
+   Naviguer dans le domaine pour visualiser les **ordinateurs** et **utilisateurs** ajoutés.
+
+
+## La base de la gestion d'un domaine
+
+**La création de l'arborescence doit être bien comprise et réalisée avant de monter un Active Directory (AD)**.
+
+La bonne pratique veut qu'on crée une unité d'organisation (OU) et qu'on coche l'option 'Protéger l'objet contre la suppression accidentelle'.
+
+
+### Création d'une Unité d'Organisation (OU) dans Active Directory
+
+1. **Ouvrez la console Active Directory (dsa.msc)** :
+   - Tapez `dsa.msc` dans la barre de recherche du menu Démarrer ou dans l'invite de commande pour ouvrir la console **Utilisateurs et ordinateurs Active Directory**.
+
+2. **Créer l'Unité d'Organisation principale "Mon Entreprise"** :
+   - Clic droit sur le **domaine**.
+   - Sélectionnez **Nouveau** > **Unité d'organisation**.
+   - Nommez l'unité **"Mon Entreprise"**.
+
+3. **Créer des sous-UOs** pour représenter la structure de votre entreprise :
+   - Répétez l'opération pour créer des sous-unités à l'intérieur de "Mon Entreprise" afin de modéliser l'organisation de votre entreprise.
+
+
+###  Étapes pour supprimer une Unité d'Organisation (OU) protégée
+
+1. **Ouvrir la console Active Directory** :
+   - Tape `dsa.msc` dans la barre de recherche du menu Démarrer ou dans l'invite de commande pour ouvrir la console **Utilisateurs et ordinateurs Active Directory**.
+
+2. **Activer l'affichage des fonctionnalités avancées** :
+   - Dans la console, clique sur le menu **Affichage** en haut, puis sélectionne **Fonctionnalités avancées**.
+
+3. **Désactiver la protection contre la suppression accidentelle** :
+   - Dans l'arborescence de ton domaine, trouve l'Unité d'Organisation (OU) que tu veux supprimer.
+   - Fais un clic droit sur l'OU et choisis **Propriétés**.
+   - Dans l'onglet **Objet**, décoche l'option **Protéger l'objet contre la suppression accidentelle**.
+   - Clique sur **OK** pour valider.
+
+4. **Supprimer l'OU** :
+   - Une fois la protection désactivée, fais un clic droit à nouveau sur l'OU.
+   - Choisis **Supprimer**, puis confirme la suppression.
+
+
+
 Par exemple :
 
 ![image](https://hackmd.io/_uploads/H1_o1nr6A.png)
 
-Ensuite, afin d'éviter le plus d'erreurs possibles, il est possible de créer des modèles. Nous pouvons commencer par créer les groupes dont nous aurons besoin. Pour minimiser les risques d'erreurs, nous allons concevoir des modèles avec différentes restrictions afin d'explorer chaque possibilité.
+### Création de Modèles pour Minimiser les Erreurs
+
+Pour éviter au maximum les erreurs, il est possible de créer des modèles. Nous allons d'abord commencer par définir les groupes nécessaires. Ensuite, nous pourrons appliquer différentes restrictions afin d'explorer les diverses possibilités.
+
+Voici un exemple de création de groupes :
+
+![image](https://hackmd.io/_uploads/HkKuN9UTC.png)
+![image](https://hackmd.io/_uploads/HJXqE9LaC.png)
+
+Une fois les groupes créés, nous allons concevoir des modèles avec diverses restrictions. Cela nous permettra d'explorer chaque option de manière contrôlée et sécurisée, minimisant ainsi le risque d'erreurs.
+
+Exemple de modèle avec restrictions :
+![image](https://hackmd.io/_uploads/BkfG758TA.png)
+Configuration des Comptes
+![image](https://hackmd.io/_uploads/BkODQqU6C.png)
+
+En fonction des réglages, nous pouvons accéder à des fonctionnalités plus avancées dans la configuration des comptes utilisateurs. Il est possible de définir des horaires d'accès, de restreindre la connexion à des ordinateurs spécifiques, et bien plus encore.
+Voici un exemple de configuration :
+![image](https://hackmd.io/_uploads/SJHML9U6C.png)
+![image](https://hackmd.io/_uploads/Hkec898aR.png)
 
 
+# Creer des ressources partagées avec la méthode AGDLP
+
+Pour partager un dossier en utilisant la méthode AGDLP (Account, Global, Domain Local, Permission), voici les étapes à suivre :
+
+## Configuration des groupes et des permissions sur un dossier partagé (Service Marketing)
+
+### Étapes de configuration
+
+#### Créer les groupes nécessaires
+- **Groupe global (GG)** : Ce groupe regroupe les utilisateurs du service Marketing ayant besoin d'accéder au dossier.
+  - Exemple : `GG_Marketing`
+  
+- **Groupe de domaine local (GDL)** : Ce groupe attribue les permissions sur le dossier.
+  - Exemple : 
+    - `GDL_Marketing_CT` (Contrôle total)
+    - `GDL_Marketing_M` (Modification)
+    - `GDL_Marketing_L` (Lecture)
+    - `GDL_Marketing_R` (Refus)
+
+#### Ajouter les utilisateurs au groupe global
+- Ajoutez les utilisateurs concernés au groupe global `GG_Marketing`.
+
+#### Ajouter le groupe global au groupe de domaine local
+- Ajoutez le groupe `GG_Marketing` comme membre des groupes :
+  - `GDL_Marketing_CT` (si l'utilisateur doit avoir un contrôle total)
+  - `GDL_Marketing_M` (si l'utilisateur doit pouvoir modifier)
+  - `GDL_Marketing_L` (si l'utilisateur doit seulement lire)
+  - `GDL_Marketing_R` (pour refuser l'accès à certains utilisateurs)
+
+#### Créer le dossier à partager sur le serveur de fichiers
+- Sur le serveur de fichiers, créez le dossier destiné au partage pour le service Marketing.
+
+#### Partager le dossier
+- Partagez le dossier et attribuez-lui un **nom de partage** approprié (ex: `Marketing_Share`).
+
+#### Configurer les permissions de partage
+- **Groupe "Administrateurs"** : Donnez le contrôle total.
+- **Groupes GDL Marketing** :
+  - **GDL_Marketing_CT** : Contrôle total
+  - **GDL_Marketing_M** : Modification
+  - **GDL_Marketing_L** : Lecture
+  - **GDL_Marketing_R** : Refus d'accès
+
+#### Configurer les permissions NTFS sur le dossier
+- **Groupe "Administrateurs"** : Donnez le contrôle total.
+- **Groupes GDL Marketing** :
+  - **GDL_Marketing_CT** : Contrôle total
+  - **GDL_Marketing_M** : Modification
+  - **GDL_Marketing_L** : Lecture
+  - **GDL_Marketing_R** : Refus d'accès
+
+#### Vérifier l'héritage des permissions
+- Assurez-vous que l'héritage des permissions est correctement configuré pour les sous-dossiers afin que les utilisateurs héritent des permissions définies.
 
 
- 
+# Service DHCP
+
+**Lexique**
+
+**DHCP** : `D`ynamic `H`ost `C`onfiguration `P`rotocol
+
+### Notions de bail
+Un **bail** est une sorte de contrat entre le client et le serveur DHCP. Ce contrat permet au client d'obtenir une adresse IP pour une durée déterminée, ainsi que d'autres paramètres réseau (masque de sous-réseau, passerelle, etc.).
+
+#### Contenu du bail :
+- Durée du bail
+- Adresse IP
+- Masque de sous-réseau
+- Autres paramètres réseau
+
+### Obtention d'un bail (Processus DORA)
+Le processus DORA décrit les étapes nécessaires pour obtenir une adresse IP via DHCP :
+1. **DHCP Discover** : Le client découvre le réseau avec une requête DHCP Discover.
+2. **DHCP Offer** : Un serveur DHCP répond avec une offre (DHCP Offer).
+3. **DHCP Request** : Le client demande officiellement l'adresse IP proposée.
+4. **DHCP Acknowledgment (ACK)** : Le serveur confirme l'attribution du bail.
+
+### Renouvellement du bail
+- Le bail est renouvelé à **50%** de sa durée.
+- Si le renouvellement à 50% échoue, une nouvelle tentative est effectuée à **87,5%** de la durée.
+
+### DHCP Release (Résiliation du bail)
+- **DHCP Release** : Résiliation du bail par le client.
+- Si le poste est arrêté sans résiliation, le bail reste actif jusqu'à expiration, à moins d'une action spécifique.
