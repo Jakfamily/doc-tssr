@@ -506,6 +506,25 @@ Pour partager un dossier en utilisant la méthode AGDLP (Account, Global, Domain
 #### Vérifier l'héritage des permissions
 - Assurez-vous que l'héritage des permissions est correctement configuré pour les sous-dossiers afin que les utilisateurs héritent des permissions définies.
 
+# Le Routage 
+- constituer dun adresse reseaux de destination 
+- un masque sous reseaux
+- une adresse de passerelle 
+
+le routeur peut effectuer 3 operations possible avec le paquet 
+- tranferer au troncon suivant 
+- tranferer a lhote destinataire 
+- labandonner 
+
+#### installation pfSense 
+prerequis 2 CPU
+
+- 20 Go de disque
+- 2 interfaces
+	- 1 en mode bridge
+	- 1 en mode VmNet10
+a revoir 
+
 
 # Service DHCP
 
@@ -536,3 +555,26 @@ Le processus DORA décrit les étapes nécessaires pour obtenir une adresse IP v
 ### DHCP Release (Résiliation du bail)
 - **DHCP Release** : Résiliation du bail par le client.
 - Si le poste est arrêté sans résiliation, le bail reste actif jusqu'à expiration, à moins d'une action spécifique.
+
+## Les Conteneurs
+
+### Étendue (Scope)
+Une étendue est un conteneur qui contient :
+- **Nom** : Le nom de l'étendue.
+- **Plage d'adresses IP** : La plage d'adresses IP à distribuer (ex : 192.168.1.100 - 192.168.1.200).
+- **Bail** : La durée pendant laquelle une adresse IP est attribuée à un client.
+- **Exclusions IP** : Les adresses IP spécifiques qui ne seront pas attribuées dans cette étendue.
+
+### Réservation
+Une réservation est un conteneur spécifique à un appareil qui contient :
+- **Nom de la réservation** : Le nom de la réservation associée.
+- **Adresse IP réservée** : L'adresse IP spécifique réservée pour un équipement (ex : 192.168.1.150).
+- **Adresse MAC** : L'adresse MAC de l'équipement qui est liée à l'adresse IP réservée.
+- **Conteneur parent** : Doit être lié à l'étendue (scope) parent qui gère la plage d'adresses IP.
+
+crer un serveur DHCP hors domaine ad 
+ajoute de fonctionaliter et role 
+selection server dhcp 
+puis rentrer dans la conf post deploie 
+valider afin de verifier on lance la nouvelle consiole msc via les outils dadministration 
+ajouter une nouvelle etendu 
