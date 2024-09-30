@@ -1,3 +1,7 @@
+--- 
+En cours de rédaction 
+
+---
 ## Renommer les cartes réseaux sous Linux avec `systemd` (ens ou enp0s[0-n])
 
 
