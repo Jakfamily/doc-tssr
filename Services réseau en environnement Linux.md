@@ -108,7 +108,50 @@ nmcli connection modify Wired\ connection\ 1 ipv4.dns 192.168.1
 ```bash=
 #Dans etc/resolv.conf 
 search demo.eni ad.campus-eni.fr   #permet de definir les suffix dns
-domain ad.campus-eni.fr            # nom de domaine prioncipal utiliser 
+domain ad.campus-eni.fr            # nom de domaine principal utiliser 
 nameserver 10.0.0.3                #pour definir les server dns 
 ```
 si la configuration reseaux est en dhcp cest celui ci qui fournit la configurration dns 
+
+# Routage 
+
+```bash 
+# Afficher la table de routage
+ip route
+
+# Ajouter une route vers une IP spécifique via une passerelle
+ip route add 10.11.12.13 via 172.16.6.123
+
+# Ajouter une route vers un réseau
+ip route add 10.11.12.13/16 via 172.16.6.123
+
+# Ajouter une route par défaut
+ip route add default via 172.16.6.123
+
+# Modifier une route par défaut existante
+ip route change default via 172.16.6.123
+
+# Supprimer une route vers un réseau
+ip route del 10.12.13.14/16
+
+# Configuration persistante dans /etc/network/interfaces
+# Exemple d'ajout d'une route dans ce fichier
+auto eth0
+iface eth0 inet static
+  address 192.168.1.10
+  netmask 255.255.255.0
+  gateway 192.168.1.1
+  post-up ip route add 10.11.12.0/24 via 192.168.1.1
+EOT
+
+# Activer le routage IP dans /etc/sysctl.conf
+passer la valeur forward a 1 au lieu de 0
+
+# Recharger la configuration sysctl pour prendre en compte le changement
+sysctl -p
+
+# Vérifier que le routage IP est bien activé
+sysctl net.ipv4.ip_forward
+```
+
+
