@@ -43,7 +43,7 @@ ne pas oublier de redemarter le reseaux apres configuration :
 systemctl restart networking
 ```
 ###  Méthode network manager 
-```
+```bash=
 # Vérifie si Network Manager est activé et en cours d'exécution
 systemctl status NetworkManager
 
@@ -80,7 +80,7 @@ ip r del default      # Supprimer une route par défaut
 ```
 
 ## Nom d'Hôte / FQDN (Full Qualified Domain Name = nom d'hote + nom de domaine)
-```bash
+```bash=
 # Pour vérifier le nom d'hôte
 hostname
 ```
@@ -101,7 +101,7 @@ config standart
 on trouveras hosts: files dns ce qui veut dire lors de la requete dns en premier je lis le fichier `etc/host` si il trouve pas il vas interoger le fichier etc/resolve.conf 
 
 soit avec le net work manager 
-```bash =
+```bash=
 #avec networkmanager
 nmcli connection modify Wired\ connection\ 1 ipv4.dns 192.168.1
 ```
@@ -115,7 +115,7 @@ si la configuration reseaux est en dhcp cest celui ci qui fournit la configurrat
 
 # Routage 
 
-```bash 
+```bash=
 # Afficher la table de routage
 ip route
 
@@ -182,19 +182,19 @@ ne pas oublier d'installer open-ssh
 
 ### Installation de BIND9
 
-```bash
+```bash=
 sudo apt install bind9
 ```
 ### Configuration de base
 Modifier le fichier /etc/bind/named.conf.options
 Ouvrez le fichier avec un éditeur de texte :
 
-```bash
+```bash=
 sudo nano /etc/bind/named.conf.options
 ```
 Ajoutez ou modifiez les lignes suivantes :
 
-```bash
+```bash=
 options {
     // Désactiver DNSSEC
     dnssec-validation no;
@@ -208,12 +208,12 @@ options {
 ### Création d'une ACL
 Modifiez le fichier /etc/bind/named.conf pour ajouter une ACL :
 
-```bash
+```bash=
 sudo nano /etc/bind/named.conf
 ```
 Ajoutez ces lignes au début du fichier :
 
-```bash
+```bash=
 acl "trusted-c" {
     192.168.1.0/24;
     10.0.0.0/8;
@@ -224,7 +224,7 @@ acl "trusted-c" {
 ### Configuration des options de récursion
 Retournez dans le fichier /etc/bind/named.conf.options et ajoutez la ligne suivante dans le bloc "options" :
 
-```bash
+```bash=
 options {
     // ... autres options ...
 
@@ -235,10 +235,97 @@ options {
 ### Vérification et redémarrage
 Vérifiez la configuration :
 
-```bash
+```bash=
 sudo named-checkconf
 ```
 Si aucune erreur n'est signalée, redémarrez le service BIND9 :
-```bash
+```bash=
 sudo systemctl restart bind9
+```
+
+# Mise en place d'un serveur DHCP sur Debian
+
+## 1. Installation du serveur DHCP
+
+Pour installer le serveur DHCP sur Debian, exécutez la commande suivante :
+
+```bash
+sudo apt install isc-dhcp-server
+```
+
+## 2. Configuration du serveur DHCP
+
+Après l'installation, il est crucial de configurer le serveur avant de le lancer. Voici les étapes à suivre :
+
+### a. Modifier le fichier de configuration principal
+
+Ouvrez le fichier de configuration `/etc/default/isc-dhcp-server` et spécifiez sur quelle interface le serveur doit écouter. Par exemple, si votre interface est `eth0`, le fichier pourrait ressembler à ceci :
+
+```bash
+INTERFACES="eth0"
+```
+
+### b. Configurer les paramètres DHCP
+
+Ensuite, modifiez le fichier de configuration DHCP principal, généralement situé dans `/etc/dhcp/dhcpd.conf`. Vous pouvez utiliser un éditeur de texte comme `nano` :
+
+```bash
+sudo nano /etc/dhcp/dhcpd.conf
+```
+
+Voici un exemple de configuration que vous pouvez adapter à vos besoins :
+
+```conf
+# Exemple de configuration DHCP
+
+# Nom de domaine
+option domain-name "exemple.com";
+
+# Serveur DNS
+option domain-name-servers 8.8.8.8, 8.8.4.4; # Google DNS
+
+# Durées de location par défaut
+default-lease-time 600; # 10 minutes
+max-lease-time 7200;    # 2 heures
+
+# Serveur DHCP autoritaire
+authoritative;
+
+# Journalisation
+log-facility local7;
+
+# Configuration du subnet
+subnet 192.168.1.0 netmask 255.255.255.0 {
+    range 192.168.1.10 192.168.1.100; # Plage d'adresses IP à attribuer
+    option routers 192.168.1.1;       # Passerelle
+    option subnet-mask 255.255.255.0; # Masque de sous-réseau
+    option broadcast-address 192.168.1.255; # Adresse de diffusion
+}
+```
+
+## 3. Lancer le service DHCP
+
+Après avoir enregistré vos modifications dans `dhcpd.conf`, vous pouvez démarrer le service DHCP. Exécutez les commandes suivantes :
+
+```bash
+sudo systemctl restart isc-dhcp-server
+sudo systemctl enable isc-dhcp-server
+```
+
+## 4. Vérifier le statut du service
+
+Pour vérifier que le serveur DHCP fonctionne correctement, utilisez :
+
+```bash
+sudo systemctl status isc-dhcp-server
+```
+
+Vous devriez voir un message indiquant que le service est actif (en cours d'exécution).
+
+## 5. Vérifier les journaux
+
+Si vous rencontrez des problèmes, vous pouvez consulter les journaux du serveur DHCP pour obtenir plus d'informations :
+
+```bash
+sudo tail -f /var/log/syslog
 ```
