@@ -142,10 +142,10 @@ iface eth0 inet static
   netmask 255.255.255.0
   gateway 192.168.1.1
   post-up ip route add 10.11.12.0/24 via 192.168.1.1
-EOT
 
 # Activer le routage IP dans /etc/sysctl.conf
-passer la valeur forward a 1 au lieu de 0
+# passer la valeur forward a 1 au lieu de 0
+net.ipv4.ip_fordward=1
 
 # Recharger la configuration sysctl pour prendre en compte le changement
 sysctl -p
@@ -154,4 +154,91 @@ sysctl -p
 sysctl net.ipv4.ip_forward
 ```
 
+# pfsense 
 
+une fois installer modifier le sens des carte reseaux selon la config pour ce faire on assigne les interface en tapant 1 
+ intervertir les carte 
+ 
+puis configurer les adresse ip en tapant 2 
+
+tres intuitifs
+
+
+
+
+# Mettre en place un acces a distance 
+
+generer une pair de cles ssh
+```bash=
+ssh-keygen
+```
+une fois generer cpier la cles sur machine distante 
+```bash=
+ssh-copy-id user@ip
+```
+ne pas oublier d'installer open-ssh
+
+# Mise en place du service DNS avec BIND9
+
+### Installation de BIND9
+
+```bash
+sudo apt install bind9
+```
+### Configuration de base
+Modifier le fichier /etc/bind/named.conf.options
+Ouvrez le fichier avec un éditeur de texte :
+
+```bash
+sudo nano /etc/bind/named.conf.options
+```
+Ajoutez ou modifiez les lignes suivantes :
+
+```bash
+options {
+    // Désactiver DNSSEC
+    dnssec-validation no;
+
+    // Désactiver IPv6 si non utilisé
+    listen-on-v6 { none; };
+
+    // Les autres options seront ajoutées plus tard
+};
+```
+### Création d'une ACL
+Modifiez le fichier /etc/bind/named.conf pour ajouter une ACL :
+
+```bash
+sudo nano /etc/bind/named.conf
+```
+Ajoutez ces lignes au début du fichier :
+
+```bash
+acl "trusted-c" {
+    192.168.1.0/24;
+    10.0.0.0/8;
+    localhost;
+};
+```
+
+### Configuration des options de récursion
+Retournez dans le fichier /etc/bind/named.conf.options et ajoutez la ligne suivante dans le bloc "options" :
+
+```bash
+options {
+    // ... autres options ...
+
+    // Autoriser les requêtes récursives depuis les réseaux de confiance
+    allow-recursion { trusted; };
+};
+```
+### Vérification et redémarrage
+Vérifiez la configuration :
+
+```bash
+sudo named-checkconf
+```
+Si aucune erreur n'est signalée, redémarrez le service BIND9 :
+```bash
+sudo systemctl restart bind9
+```
